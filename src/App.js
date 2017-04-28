@@ -1,18 +1,45 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import * as firebase from 'firebase';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: 'alexx'
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    const rootRef = firebase.database().ref();
+    const nameRef = rootRef.child("name");
+    nameRef.on('value', (snap) => {
+      this.setState({
+        name: snap.val()
+      })
+    });
+  }
+
+  handleChange(event) {
+    const rootRef = firebase.database().ref();
+    const nameRef = rootRef.child("name");
+    const inputVal = event.target.value
+
+    nameRef.set(inputVal, () => {
+      this.setState({
+        name: inputVal
+      })
+    });
+  }
+
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <h1>{this.state.name}</h1>
+        <input value={this.state.name} onChange={this.handleChange} />
       </div>
     );
   }
