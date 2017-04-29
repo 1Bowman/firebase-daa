@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import DaaTracker from './DaaTracker'
 import './index.css';
 import * as firebase from 'firebase';
 
@@ -23,6 +24,6 @@ firebase.initializeApp(config)
 //   });
 
 ReactDOM.render(
-  <App />,
+  <DaaTracker />,
   document.getElementById('root')
 );

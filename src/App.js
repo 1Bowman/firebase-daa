@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Button, Form, FormGroup, FormControl } from 'react-bootstrap';
+import { Modal, Col, Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 import './App.css';
 import * as firebase from 'firebase';
 
@@ -7,38 +7,41 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      formValue : {
-        name: 'Alex',
-        age: '21'
+      showModal: this.props.isOpen,
+      formContents: {
+        name: '',
+        age: ''
       }
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    const rootRef = firebase.database().ref();
-    const personRef = rootRef.child("person");
-    personRef.on('value', (snap) => {
-      this.setState({
-        formValue: snap.val()
-      })
-    });
+  componentWillReceiveProps() {
+    this.setState({
+      showModal: this.props.isOpen
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      showModal: false
+    })
   }
 
   handleNameChange = (e) => {
     this.setState({
-      formValue: {
+      formContents: {
         name: e.target.value,
-        age: this.state.formValue.age
+        age: this.state.formContents.age
       }
     })
   }
 
   handleAgeChange = (e) => {
     this.setState({
-      formValue: {
-        name: this.state.formValue.name,
+      formContents: {
+        name: this.state.formContents.name,
         age: e.target.value
       }
     })
@@ -49,42 +52,48 @@ class App extends Component {
     const rootRef = firebase.database().ref();
     const personRef = rootRef.child("person");
 
-    personRef.set(this.state.formValue, () => {
+    personRef.push(this.state.formContents, () => {
       console.log('updated firebase')
     });
+
+    this.closeModal();
   }
 
   render() {
     return (
       <div className="App">
-        <div className="row">
-          <h1>{this.state.formValue.name} - {this.state.formValue.age}</h1>
-        </div>
-        <div className="row">
-          <Form horizontal>
-            <FormGroup controlId="formHorizontalName">
-              <Col xsOffset={1} xs={2}>Name</Col>
-              <Col xs={8}>
-                <FormControl onChange={this.handleNameChange} type="text" />
-              </Col>
-            </FormGroup>
+        <Modal show={this.state.showModal} onHide={() => this.closeModal()}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div>
+              <Form horizontal>
+                <FormGroup controlId="formHorizontalName">
+                  <Col xsOffset={1} xs={2}>Name</Col>
+                  <Col xs={8}>
+                    <FormControl name="name" onChange={this.handleNameChange} type="text" />
+                  </Col>
+                </FormGroup>
 
-            <FormGroup controlId="formHorizontalAge">
-              <Col xsOffset={1} xs={2}>Age</Col>
-              <Col xs={8}>
-                <FormControl onChange={this.handleAgeChange} type="text" />
-              </Col>
-            </FormGroup>
+                <FormGroup controlId="formHorizontalAge">
+                  <Col xsOffset={1} xs={2}>Age</Col>
+                  <Col xs={8}>
+                    <FormControl name="age" onChange={this.handleAgeChange} type="text" />
+                  </Col>
+                </FormGroup>
 
-            <FormGroup>
-              <Col xsOffset={2} xs={10}>
-                <Button bsStyle="primary" type="button" onClick={this.handleSubmit}>Submit</Button>
-              </Col>
-            </FormGroup>
+                <FormGroup>
+                  <Col xsOffset={2} xs={10}>
+                    <Button bsStyle="primary" type="button" onClick={this.handleSubmit}>Submit</Button>
+                  </Col>
+                </FormGroup>
 
-          </Form>
+              </Form>
 
-        </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     );
   }
