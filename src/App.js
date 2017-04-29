@@ -7,7 +7,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: this.props.isOpen,
+      showModal: false,
       formContents: {
         name: '',
         age: ''
@@ -17,11 +17,10 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
     this.setState({
-      showModal: this.props.isOpen
-    })
-    console.log('APP RECIEVED PROPS', this.props.isOpen)
+      showModal: nextProps.isOpen
+    }, () => {console.log('receive props', this.state.showModal)})
   }
 
   closeModal() {
@@ -50,8 +49,6 @@ class App extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    console.log('inside handleSubmit')
 
     const rootRef = firebase.database().ref();
     const personRef = rootRef.child("person");
