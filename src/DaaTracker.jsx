@@ -16,8 +16,23 @@ class DaaTracker extends React.Component {
   componentDidMount() {
     const rootRef = firebase.database().ref()
     const personRef = rootRef.child('person')
+
+    this.setState({people: []})
     personRef.on('value', snap => {
       _.map(snap.val(), (e) => {
+        this.setState({people: this.state.people.concat(e)})
+      })
+    })
+
+    personRef.on('child_added', snap => {
+      _.map(snap.val(), e => {
+        this.setState({people: this.state.people.concat(e)})
+      })
+    })
+
+    personRef.on('child_changed', snap => {
+      this.setState({people: []})
+      _.map(snap.val(), e => {
         this.setState({people: this.state.people.concat(e)})
       })
     })
@@ -33,19 +48,13 @@ class DaaTracker extends React.Component {
   }
 
   renderPeopleList() {
-    const people = this.state.people
-    const peopleList = people.map((e) => {
-      const curItem = {
-        name: e.name,
-        age: e.age
-      }
-      this.setState({people: this.state.people.concat})
-    })
-    console.log('peoplelist', peopleList)
+      const peopleList = this.state.people.map((guy, index) => {
+        console.log(guy.name)
+        return <p key={index}>{guy.name}</p>
+      })
 
-    return <ul>{peopleList}</ul>
+      return peopleList
   }
-
 
   render(){
     return (

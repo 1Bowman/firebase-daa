@@ -21,6 +21,7 @@ class App extends Component {
     this.setState({
       showModal: this.props.isOpen
     })
+    console.log('APP RECIEVED PROPS', this.props.isOpen)
   }
 
   closeModal() {
@@ -49,14 +50,17 @@ class App extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+
+    console.log('inside handleSubmit')
+
     const rootRef = firebase.database().ref();
     const personRef = rootRef.child("person");
 
     personRef.push(this.state.formContents, () => {
       console.log('updated firebase')
-    });
+    }).then(() => this.closeModal());
 
-    this.closeModal();
+
   }
 
   render() {
