@@ -20,7 +20,7 @@ class App extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       showModal: nextProps.isOpen
-    }, () => {console.log('receive props', this.state.showModal)})
+    })
   }
 
   closeModal() {

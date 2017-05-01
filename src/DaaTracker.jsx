@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap'
 import App from './App'
+import GradeRow from './GradeRow'
 import _ from 'lodash'
 import * as firebase from 'firebase';
 
@@ -9,14 +10,21 @@ class DaaTracker extends React.Component {
     super(props);
     this.state = {
       showModal: false,
-      people: []
+      people: [],
+      gradeRows: []
     }
   }
 
   componentDidMount() {
     const rootRef = firebase.database().ref()
     const personRef = rootRef.child('person')
+    const gradeRef = rootRef.child('grades')
 
+    personRef.on('child_added', snap => {
+      _.map(snap.val(), e => {
+        this.setState({people: this.state.people.concat(e)})
+      })
+    })
 
     personRef.on('value', snap => {
       this.setState({people: []})
@@ -44,7 +52,6 @@ class DaaTracker extends React.Component {
         this.setState({people: this.state.people.concat(e)})
       })
     })
-
   }
 
   openModal() {
@@ -63,10 +70,15 @@ class DaaTracker extends React.Component {
       return peopleList
   }
 
+  renderGradeRowList() {
+    return <GradeRow classNameVal="Calc I" creditHours="4" gradeValue="B"/>
+  }
+
   render(){
     return (
       <div>
         {this.renderPeopleList()}
+        {this.renderGradeRowList()}
         <Button bsStyle="primary" onClick={() => this.openModal()}>Make a new Joe</Button>
         <App isOpen={this.state.showModal}/>
       </div>
