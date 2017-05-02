@@ -25,7 +25,13 @@ class GradeRow extends Component {
   }
 
   renderGrades() {
-    const gradeValues = ['A', 'B', 'C', 'D', 'F']
+    const gradeValues = [
+      'A',
+      'B',
+      'C',
+      'D',
+      'F'
+    ]
 
     const gradeList = gradeValues.map(grade => {
       return <option key={grade} value={grade}>{grade}</option>
@@ -41,10 +47,9 @@ class GradeRow extends Component {
     console.log('gradekey', this.gradeKey)
     console.log(this.state)
 
-    let returnObject = {}
-    returnObject[this.gradeKey] = this.state
+    const pathName = '/grades/' + this.gradeKey
 
-    gradesRef.update(returnObject)
+    gradesRef.update({pathName: this.state})
 
   }
 
