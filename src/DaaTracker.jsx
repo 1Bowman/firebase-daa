@@ -11,7 +11,7 @@ class DaaTracker extends React.Component {
     this.state = {
       showModal: false,
       people: [],
-      gradeRows: []
+      gradeRows: {}
     }
   }
 
@@ -46,6 +46,79 @@ class DaaTracker extends React.Component {
         this.setState({people: this.state.people.concat(e)})
       })
     })
+
+    gradeRef.on('value', snap => {
+      this.setState({gradeRows: {}}, () => {
+        const gradeList = snap.val()
+
+        Object.keys(gradeList).map((key) => {
+          gradeList[key].gradeKey = key
+          console.log('value', gradeList[key])
+
+          const tempGradeObject = this.state.gradeRows
+          tempGradeObject[key] = gradeList[key]
+
+          this.setState({gradeRows: tempGradeObject}, () => {
+            console.log('valueguy', this.state.gradeRows)
+          })
+        })
+      })
+    })
+
+    gradeRef.on('child_added', snap => {
+      this.setState({gradeRows: {}}, () => {
+        const gradeList = snap.val()
+
+        Object.keys(gradeList).map((key) => {
+          gradeList[key].gradeKey = key
+          console.log('value', gradeList[key])
+
+          const tempGradeObject = this.state.gradeRows
+          tempGradeObject[key] = gradeList[key]
+
+          this.setState({gradeRows: tempGradeObject}, () => {
+            console.log('valueguy', this.state.gradeRows)
+          })
+        })
+      })
+    })
+
+    gradeRef.on('child_changed', snap => {
+      this.setState({gradeRows: {}}, () => {
+        const gradeList = snap.val()
+
+        Object.keys(gradeList).map((key) => {
+          gradeList[key].gradeKey = key
+          console.log('value', gradeList[key])
+
+          const tempGradeObject = this.state.gradeRows
+          tempGradeObject[key] = gradeList[key]
+
+          this.setState({gradeRows: tempGradeObject}, () => {
+            console.log('valueguy', this.state.gradeRows)
+          })
+        })
+      })
+    })
+
+    gradeRef.on('child_removed', snap => {
+      this.setState({gradeRows: {}}, () => {
+        const gradeList = snap.val()
+
+        Object.keys(gradeList).map((key) => {
+          gradeList[key].gradeKey = key
+          console.log('value', gradeList[key])
+
+          const tempGradeObject = this.state.gradeRows
+          tempGradeObject[key] = gradeList[key]
+
+          this.setState({gradeRows: tempGradeObject}, () => {
+            console.log('valueguy', this.state.gradeRows)
+          })
+        })
+      })
+    })
+
   }
 
   openModal() {
@@ -65,7 +138,17 @@ class DaaTracker extends React.Component {
   }
 
   renderGradeRowList() {
-    return <GradeRow classNameVal="Calc I" creditHours="4" gradeValue="B"/>
+    if(this.state.gradeRows.length > 0) {
+      console.log('rendergraderowlist', this.state.gradeRows)
+
+      const gradeRowsOutput = this.state.gradeRows.map((row, index) => {
+        return <GradeRow key={index} gradeKey={row.gradeKey} classNameVal={row.classNameVal} creditHours={row.creditHours} gradeValue={row.gradeValue}/>
+      })
+      return gradeRowsOutput
+    }//
+    // } else {
+    //   return <GradeRow key={0} classNameVal="" creditHours="" gradeValue=""/>
+    // }
   }
 
   render(){

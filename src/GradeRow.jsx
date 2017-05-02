@@ -13,27 +13,23 @@ class GradeRow extends Component {
       'classNameVal': this.props.classNameVal,
       'creditHours': this.props.creditHours,
       'gradeValue': this.props.gradeValue,
-      'gradeKey': ''
+      'gradeKey': this.props.gradeKey
     }
   }
 
-  componentDidMount() {
-    const rootRef = firebase.database().ref();
-    const gradesRef = rootRef.child("grades");
-
-    const gradeKey = gradesRef.push().key
-    this.setState({gradeKey}, () => console.log('did mount', this.state.gradeKey))
-
-  }
+  // componentDidMount() {
+  //   const rootRef = firebase.database().ref();
+  //   const gradesRef = rootRef.child("grades");
+  //
+  //   const gradeKey2 = this.state.gradKey || gradesRef.push().key
+  //   console.log('gradekey', this.state.gradKey, gradeKey2)
+  //
+  //   this.setState({gradeKey: gradeKey2}, () => console.log('did mount', this.state.gradeKey))
+  //
+  // }
 
   renderGrades() {
-    const gradeValues = [
-      'A',
-      'B',
-      'C',
-      'D',
-      'F'
-    ]
+    const gradeValues = ['A','B','C','D','F']
 
     const gradeList = gradeValues.map(grade => {
       return <option key={grade} value={grade}>{grade}</option>
@@ -51,6 +47,7 @@ class GradeRow extends Component {
       'creditHours': this.state.creditHours,
       'gradeValue': this.state.gradeValue,
     }
+    console.log('in update data', this.state.gradeKey)
 
     gradesRef.update({[this.state.gradeKey]: returnObject})
 
