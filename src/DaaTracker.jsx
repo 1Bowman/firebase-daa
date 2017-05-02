@@ -20,12 +20,6 @@ class DaaTracker extends React.Component {
     const personRef = rootRef.child('person')
     const gradeRef = rootRef.child('grades')
 
-    personRef.on('child_added', snap => {
-      _.map(snap.val(), e => {
-        this.setState({people: this.state.people.concat(e)})
-      })
-    })
-
     personRef.on('value', snap => {
       this.setState({people: []})
       _.map(snap.val(), (e) => {

@@ -7,12 +7,13 @@ class GradeRow extends Component {
   constructor(props) {
     super(props);
 
-    let gradeKey = 'temp'
+    // let gradeKey = 'temp'
 
     this.state = {
       'classNameVal': this.props.classNameVal,
       'creditHours': this.props.creditHours,
-      'gradeValue': this.props.gradeValue
+      'gradeValue': this.props.gradeValue,
+      'gradeKey': ''
     }
   }
 
@@ -20,8 +21,9 @@ class GradeRow extends Component {
     const rootRef = firebase.database().ref();
     const gradesRef = rootRef.child("grades");
 
-    this.gradeKey = gradesRef.push().key
-    console.log('did mount', this.gradeKey)
+    const gradeKey = gradesRef.push().key
+    this.setState({gradeKey}, () => console.log('did mount', this.state.gradeKey))
+
   }
 
   renderGrades() {
@@ -44,12 +46,13 @@ class GradeRow extends Component {
     const rootRef = firebase.database().ref();
     const gradesRef = rootRef.child("grades");
 
-    console.log('gradekey', this.gradeKey)
-    console.log(this.state)
+    const returnObject = {
+      'classNameVal': this.state.classNameVal,
+      'creditHours': this.state.creditHours,
+      'gradeValue': this.state.gradeValue,
+    }
 
-    const pathName = '/grades/' + this.gradeKey
-
-    gradesRef.update({pathName: this.state})
+    gradesRef.update({[this.state.gradeKey]: returnObject})
 
   }
 
@@ -60,10 +63,7 @@ class GradeRow extends Component {
     console.log(name, value)
     this.setState({
       [name]: value
-    })
-
-    this.updateData()
-
+    }, () => this.updateData())
   }
 
 
